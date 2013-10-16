@@ -1,10 +1,12 @@
 {
-	"name": "bloocker",
+	"name": "celebwatch",
 	"version": "0.0.1",
 	"dependencies" :{
 		"express": "3.0.3",
 		"passport": "0.1.15",
-		"socket.io": "0.9.11"
+		"socket.io": "0.9.11",
+		"request" : "2.27.0",
+		"cheerio" : "0.12.3"
 	},
 	"engines": {
 		"node": "0.8.11",

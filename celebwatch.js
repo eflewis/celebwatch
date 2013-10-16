@@ -1,14 +1,15 @@
 document.onLoad = function(){
 	var celebName = "Eleanor Lewis";
 	var message = "";
+	var dead = false;
 	var celebImg = "";
 
 
 	//console.log($.getJSON("http://en.wikipedia.org/w/api.php?action=query&amp;format=json&amp;callback=?&titles=david_bowie");
 
 
-	var goodTerms = ["release", "premier", "victory", "wedding", "happy", "good", "luck", "lucky", "joy", "joyous", "relief", "award", "honor", "friend", "acccolade", "healthy", "better", "baby", "birth", "birthday", "great"];
-	var badTerms = ["arrest", "death", "murder", "fight", "brawl", "beating", "sad", "bad", "unhappy", "strain", "weed", "pot", "drunk", "shout", "yell", "fail", "accident", "illness", "dead", "flop", "bomb", "shame", "fat", "fatter", "complications", "divorce", "loss", "trouble", "police", "manhunt", "rant", "crime", "prison", "jail", "sentence", "split", "cancer"];
+	var goodTerms = ["release", "premier", "victory", "wedding", "happy", "good", "luck", "lucky", "joy", "joyous", "relief", "award", "honor", "friend", "acccolade", "healthy", "better", "baby", "birth", "birthday", "great", "praise", "honor", "stunning", "exhonorated", "acquittal", "acquitted", "win", "won", "victory", "triumph", "hitched", "incredible"];
+	var badTerms = ["arrest", "death", "murder", "fight", "brawl", "beating", "sad", "bad", "unhappy", "strain", "weed", "pot", "drunk", "shout", "yell", "fail", "accident", "illness", "dead", "flop", "bomb", "shame", "fat", "fatter", "complications", "divorce", "loss", "trouble", "police", "manhunt", "rant", "crime", "prison", "jail", "sentence", "split", "cancer", "shock", "shocking", "terrible", "addiction", "rehab", "break", "broken", "breakup", "tragedy", "disaster", "doom", "cremation", "evil", "Randian", "deadlock", "bitter", "tense"];
 
 	var getImg = function(data){
 		$("#celebImg").hide();
@@ -38,6 +39,7 @@ document.onLoad = function(){
 		for(j in data.items){
 			map = data.items[j];
 			snippet = map.snippet;
+			console.log(snippet);
 			for(t in goodTerms){
 				if(snippet.indexOf(goodTerms[t]) != -1){
 					goodTotal++;
@@ -56,8 +58,13 @@ document.onLoad = function(){
 			message = "Probably, yeah";
 		} else if(score < 0){
 			message = "Not at the moment :(";
+		} else if(score === 1){
+			message = "Yes, perhaps they're lying down"
 		} else {
-			message = "Yep";
+			message = "Yep!";
+		}
+		if(dead === true){
+			message = message + "<br /><br />But they're dead!";
 		}
 		$("#message").empty().html(message);
 	}
@@ -68,7 +75,7 @@ document.onLoad = function(){
 			type : 'GET',
 			dataType : 'jsonp',
 			async : true, 
-			success : function(data){setMessage(data);}
+			success : function(data){getDead(celebName),setMessage(data);}
 		});
 	}
 
@@ -83,11 +90,26 @@ document.onLoad = function(){
 		});
 	}
 
+	var getDead = function(celebName){
+		$.ajax({
+			url : "/getDead",
+			type: 'POST',
+			dataType : 'json',
+			async : true,
+			data : {
+				'celebName' : celebName
+			},
+			success : function(data){
+				dead = data.dead;
+			}
+		})
+	}
+
 	$('#watchButton').click(function(){fetchImage($("#celeb").val());}
 		//celebName = $("#celeb").val();
 		
 	);
-	$('#searchInput').submit(function(){fetchImage($("#celeb").val());}
+	$('#searchInput').submit(function(evt){evt.preventDefault(); fetchImage($("#celeb").val());}
 		//celebName = $("#celeb").val();
 		
 	);
